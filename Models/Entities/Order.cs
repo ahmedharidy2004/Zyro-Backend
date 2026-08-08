@@ -1,4 +1,4 @@
-namespace GameStoreApi.Domain.Entities;
+namespace GameStoreApi.Models.Entities;
 
 public class Order
 {

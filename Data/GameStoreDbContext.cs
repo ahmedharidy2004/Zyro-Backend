@@ -1,4 +1,4 @@
-using GameStoreApi.Domain.Entities;
+using GameStoreApi.Models.Entities;
 using Microsoft.EntityFrameworkCore;
 
 namespace GameStoreApi.Data;
