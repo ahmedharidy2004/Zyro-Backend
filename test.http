@@ -2,5 +2,25 @@ POST http://localhost:5183/api/genres
 Content-Type: application/json
 
 {
-    "Name": "RPG"
+    "Name": "Sports"
 }
+
+###
+GET  http://localhost:5183/api/genres
+
+###
+GET http://localhost:5183/api/genres/0069002e-f62d-40be-9987-18489a96e107
+
+###
+POST http://localhost:5183/api/games
+Content-Type: application/json
+
+{
+  "Name": "Resident Evil 4",
+  "Price": 59.99,
+  "GenreId": "1f071ad3-2284-41e6-912e-c76b69f825a4",
+  "ReleaseDate": "2023-03-24"
+}
+
+###
+DELETE http://localhost:5183/api/genres/a7539c3a-e418-4d4d-96b6-d6cc0cfaf8f8
