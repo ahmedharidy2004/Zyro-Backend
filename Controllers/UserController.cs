@@ -61,7 +61,14 @@ public class UserController : ControllerBase
             Email = dto.Email
         };
 
+        var cart = new Cart
+            {
+                Id = Guid.NewGuid(),
+                UserId = CreatedUser.Id
+            };
+        
         _context.Users.Add(CreatedUser);
+        _context.Carts.Add(cart);
         await _context.SaveChangesAsync();
 
         var userDto = new UserDto
