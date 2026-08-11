@@ -4,6 +4,8 @@ using GameStoreApi.Dtos.CartItems;
 using GameStoreApi.Models.Entities;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.AspNetCore.Authorization;
+using System.Security.Claims;
 
 namespace GameStoreApi.Controllers;
 
@@ -18,10 +20,17 @@ public class CartController : ControllerBase
         _context = context;
     }
 
-    [HttpGet("{userId}")]
-    public async Task<ActionResult<CartDto>> GetCart(Guid userId)
+    [Authorize]
+    [HttpGet("my-cart")]
+    public async Task<ActionResult<CartDto>> GetCart()
     {
-        var user = await _context.Users.FirstOrDefaultAsync(user => user.Id == userId);
+        var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+        if (!Guid.TryParse(userId, out var userGuid))
+        {
+            return Unauthorized();
+        }
+
+        var user = await _context.Users.FirstOrDefaultAsync(user => user.Id == userGuid);
 
         if(user is null)
         {
@@ -29,7 +38,7 @@ public class CartController : ControllerBase
         }
 
         var cart = await _context.Carts
-                                    .Where(cart => cart.UserId == userId)
+                                    .Where(cart => cart.UserId == userGuid)
                                     .Select(cart => new CartDto
                                     {
                                         Id = cart.Id,
@@ -54,11 +63,16 @@ public class CartController : ControllerBase
         return Ok(cart);
     }
 
-    [HttpPost("{userId}/items")]
-    public async Task<ActionResult> AddCartItem(
-        Guid userId,
-        AddCartItemDto dto)
+    [Authorize]
+    [HttpPost("me/items")]
+    public async Task<ActionResult> AddCartItem(AddCartItemDto dto)
     {
+        var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+        if (!Guid.TryParse(userId, out var userGuid))
+        {
+            return Unauthorized();
+        }
+        
         // check quantity
         if (dto.Quantity <= 0)
         {
@@ -76,7 +90,7 @@ public class CartController : ControllerBase
 
         // check cart exists
         var cart = await _context.Carts
-            .FirstOrDefaultAsync(cart => cart.UserId == userId);
+            .FirstOrDefaultAsync(cart => cart.UserId == userGuid);
 
         if (cart is null)
         {
@@ -110,19 +124,25 @@ public class CartController : ControllerBase
         return Ok(cartItem);
     }
 
-    [HttpPut("{userId}/items/{itemId}")]
+    [Authorize]
+    [HttpPut("me/items/{itemId}")]
     public async Task<ActionResult> UpdateCartItem(
-        Guid userId,
         Guid itemId,
         UpdateCartItemDto dto)
     {
+        var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+        if (!Guid.TryParse(userId, out var userGuid))
+        {
+            return Unauthorized();
+        }
+        
         if(dto.Quantity <= 0)
         {
             return BadRequest(new { message = "Invalid Quantity"});
         }
 
         var cart = await _context.Carts.FirstOrDefaultAsync(
-            cart => cart.UserId == userId
+            cart => cart.UserId == userGuid
         );
 
         if(cart is null)
@@ -146,13 +166,18 @@ public class CartController : ControllerBase
         return NoContent();
     }
 
-    [HttpDelete("{userId}/items/{itemId}")]
-    public async Task<ActionResult> DeleteCartItem(
-        Guid userId,
-        Guid itemId)
+    [Authorize]
+    [HttpDelete("me/items/{itemId}")]
+    public async Task<ActionResult> DeleteCartItem(Guid itemId)
     {
+        var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+        if (!Guid.TryParse(userId, out var userGuid))
+        {
+            return Unauthorized();
+        }
+
         var cart = await _context.Carts.FirstOrDefaultAsync(
-            cart => cart.UserId == userId
+            cart => cart.UserId == userGuid
         );
 
         if(cart is null)

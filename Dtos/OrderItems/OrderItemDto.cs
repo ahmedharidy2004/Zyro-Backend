@@ -1,6 +1,6 @@
 namespace GameStoreApi.Dtos.OrderItems;
 
-public class OrderItem
+public class OrderItemDto
 {
     public Guid Id { get; set; }
     public Guid OrderId { get; set; }

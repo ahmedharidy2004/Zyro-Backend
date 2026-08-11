@@ -1,0 +1,7 @@
+appsettings.json
+appsettings.*.json
+!appsettings.Example.json
+test.http
+*.db
+*.db-shm
+*.db-wal

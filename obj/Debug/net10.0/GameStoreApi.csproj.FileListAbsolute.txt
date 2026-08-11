@@ -290,3 +290,13 @@ C:\Users\Ahmed Mahmoud\OneDrive\Desktop\GameStoreApi\Game-Store-API\obj\Debug\ne
 C:\Users\Ahmed Mahmoud\OneDrive\Desktop\GameStoreApi\Game-Store-API\obj\Debug\net10.0\GameStoreApi.pdb
 C:\Users\Ahmed Mahmoud\OneDrive\Desktop\GameStoreApi\Game-Store-API\obj\Debug\net10.0\GameStoreApi.genruntimeconfig.cache
 C:\Users\Ahmed Mahmoud\OneDrive\Desktop\GameStoreApi\Game-Store-API\obj\Debug\net10.0\ref\GameStoreApi.dll
+C:\Users\Ahmed Mahmoud\OneDrive\Desktop\GameStoreApi\Game-Store-API\bin\Debug\net10.0\BCrypt-Net-Next.dll
+C:\Users\Ahmed Mahmoud\OneDrive\Desktop\GameStoreApi\Game-Store-API\bin\Debug\net10.0\Microsoft.AspNetCore.Authentication.JwtBearer.dll
+C:\Users\Ahmed Mahmoud\OneDrive\Desktop\GameStoreApi\Game-Store-API\bin\Debug\net10.0\Microsoft.Bcl.Cryptography.dll
+C:\Users\Ahmed Mahmoud\OneDrive\Desktop\GameStoreApi\Game-Store-API\bin\Debug\net10.0\Microsoft.IdentityModel.Abstractions.dll
+C:\Users\Ahmed Mahmoud\OneDrive\Desktop\GameStoreApi\Game-Store-API\bin\Debug\net10.0\Microsoft.IdentityModel.JsonWebTokens.dll
+C:\Users\Ahmed Mahmoud\OneDrive\Desktop\GameStoreApi\Game-Store-API\bin\Debug\net10.0\Microsoft.IdentityModel.Logging.dll
+C:\Users\Ahmed Mahmoud\OneDrive\Desktop\GameStoreApi\Game-Store-API\bin\Debug\net10.0\Microsoft.IdentityModel.Protocols.dll
+C:\Users\Ahmed Mahmoud\OneDrive\Desktop\GameStoreApi\Game-Store-API\bin\Debug\net10.0\Microsoft.IdentityModel.Protocols.OpenIdConnect.dll
+C:\Users\Ahmed Mahmoud\OneDrive\Desktop\GameStoreApi\Game-Store-API\bin\Debug\net10.0\Microsoft.IdentityModel.Tokens.dll
+C:\Users\Ahmed Mahmoud\OneDrive\Desktop\GameStoreApi\Game-Store-API\bin\Debug\net10.0\System.IdentityModel.Tokens.Jwt.dll

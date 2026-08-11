@@ -1,6 +1,7 @@
 using GameStoreApi.Data;
 using GameStoreApi.Dtos.Users;
 using GameStoreApi.Models.Entities;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
@@ -17,6 +18,7 @@ public class UserController : ControllerBase
         _context = context;
     }
 
+    [Authorize(Roles = "Admin")]
     [HttpGet]
     public async Task<ActionResult<IEnumerable<UserDto>>> GetUsers()
     {
@@ -25,12 +27,14 @@ public class UserController : ControllerBase
                             {
                                Id = user.Id,
                                Username = user.Username,
-                               Email = user.Email
+                               Email = user.Email,
+                               Role = user.Role
                             }).ToListAsync();
 
         return Ok(users);
     }
 
+    [Authorize(Roles = "Admin")]
     [HttpGet("{id}")]
     public async Task<ActionResult<UserDto>> GetUserById(Guid id)
     {
@@ -40,7 +44,8 @@ public class UserController : ControllerBase
                             {
                                Id = user.Id,
                                Username = user.Username,
-                               Email = user.Email
+                               Email = user.Email,
+                               Role = user.Role
                             }).FirstOrDefaultAsync();
 
         if(user is null)
@@ -51,6 +56,7 @@ public class UserController : ControllerBase
         return Ok(user);
     }
 
+    [Authorize(Roles = "Admin")]
     [HttpPost]
     public async Task<ActionResult<UserDto>> CreateUser(CreateUserDto dto)
     {
@@ -58,7 +64,8 @@ public class UserController : ControllerBase
         {
             Id = Guid.NewGuid(),
             Username = dto.Username,
-            Email = dto.Email
+            Email = dto.Email,
+            Role = dto.Role
         };
 
         var cart = new Cart
@@ -75,12 +82,14 @@ public class UserController : ControllerBase
             {
                 Id = CreatedUser.Id,
                 Username = CreatedUser.Username,
-                Email = CreatedUser.Email
+                Email = CreatedUser.Email,
+                Role = CreatedUser.Role
             };
 
         return CreatedAtAction(nameof(GetUserById), new { id = userDto.Id }, userDto);
     }
 
+    [Authorize(Roles = "Admin")]
     [HttpPut("{id}")]
     public async Task<ActionResult> UpdateUser(Guid id, UpdateUserDto dto)
     {
@@ -94,11 +103,13 @@ public class UserController : ControllerBase
 
         UpdatedUser.Username = dto.Username;
         UpdatedUser.Email = dto.Email;
+        UpdatedUser.Role = dto.Role;
         
         await _context.SaveChangesAsync();
         return NoContent();
     }
 
+    [Authorize(Roles = "Admin")]
     [HttpDelete("{id}")]
     public async Task<ActionResult> DeleteUser(Guid id)
     {

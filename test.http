@@ -13,13 +13,14 @@ GET http://localhost:5183/api/genres/0069002e-f62d-40be-9987-18489a96e107
 
 ###
 POST http://localhost:5183/api/games
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJodHRwOi8vc2NoZW1hcy54bWxzb2FwLm9yZy93cy8yMDA1LzA1L2lkZW50aXR5L2NsYWltcy9uYW1laWRlbnRpZmllciI6IjEzOTIxYTA5LTU0YzktNDIyYi1iYjdhLTNhYTI1ZGNmMDNlYyIsImh0dHA6Ly9zY2hlbWFzLnhtbHNvYXAub3JnL3dzLzIwMDUvMDUvaWRlbnRpdHkvY2xhaW1zL2VtYWlsYWRkcmVzcyI6ImFkbWluQHRlc3QuaW8iLCJodHRwOi8vc2NoZW1hcy54bWxzb2FwLm9yZy93cy8yMDA1LzA1L2lkZW50aXR5L2NsYWltcy9uYW1lIjoiaGFyaGFyNDAwMCIsImh0dHA6Ly9zY2hlbWFzLm1pY3Jvc29mdC5jb20vd3MvMjAwOC8wNi9pZGVudGl0eS9jbGFpbXMvcm9sZSI6IkFkbWluIiwiZXhwIjoxNzg2NTQ0OTEwLCJpc3MiOiJHYW1lU3RvcmVBcGkiLCJhdWQiOiJHYW1lU3RvcmVBcGkifQ.zsTiRpHL3v7CBkOdeeOH-dqAVAqG0WOmr8-dOtE47MM
 Content-Type: application/json
 
 {
-  "Name": "Resident Evil 4",
+  "Name": "The Conjuring",
   "Price": 59.99,
   "GenreId": "1f071ad3-2284-41e6-912e-c76b69f825a4",
-  "ReleaseDate": "2023-03-24"
+  "ReleaseDate": "2021-03-24"
 }
 
 ###
@@ -32,3 +33,16 @@ Content-Type: application/json
 {
   "Quantity": 4
 }
+
+###
+POST http://localhost:5183/api/auth/login
+Content-Type: application/json
+
+{
+  "Email": "admin@test.io",
+  "Password": "123456"
+}
+
+###
+GET http://localhost:5183/api/order/my-orders
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJodHRwOi8vc2NoZW1hcy54bWxzb2FwLm9yZy93cy8yMDA1LzA1L2lkZW50aXR5L2NsYWltcy9uYW1laWRlbnRpZmllciI6IjEyNmFkZTk3LTJlM2EtNDE4Ny04ZjVlLTI1NDMyM2E3ZDQ3ZSIsImh0dHA6Ly9zY2hlbWFzLnhtbHNvYXAub3JnL3dzLzIwMDUvMDUvaWRlbnRpdHkvY2xhaW1zL2VtYWlsYWRkcmVzcyI6ImFobWVkaGFyaWR5QHRlc3QuaW8iLCJodHRwOi8vc2NoZW1hcy54bWxzb2FwLm9yZy93cy8yMDA1LzA1L2lkZW50aXR5L2NsYWltcy9uYW1lIjoiYWhtZWRoYXJoYXIiLCJleHAiOjE3ODY1MzQ4MDIsImlzcyI6IkdhbWVTdG9yZUFwaSIsImF1ZCI6IkdhbWVTdG9yZUFwaSJ9.F-6ZKKFBh1_oxVRE8ApemQwosopySwbKFic0iwKGH5g

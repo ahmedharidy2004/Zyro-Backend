@@ -4,6 +4,8 @@ using GameStoreApi.Dtos.OrderItems;
 using GameStoreApi.Models.Entities;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.AspNetCore.Authorization;
+using System.Security.Claims;
 
 namespace GameStoreApi.Controllers;
 
@@ -18,6 +20,7 @@ public class OrderController : ControllerBase
         _context = context;
     }
 
+    [Authorize(Roles = "Admin")]
     [HttpGet]
     public async Task<ActionResult<IEnumerable<OrderDto>>> GetOrders()
     {
@@ -43,6 +46,7 @@ public class OrderController : ControllerBase
         return Ok(orders);
     }
 
+    [Authorize(Roles = "Admin")]
     [HttpGet("{id}")]
     public async Task<ActionResult<OrderDto>> GetOrderById(Guid id)
     {
@@ -74,16 +78,23 @@ public class OrderController : ControllerBase
         return Ok(order);
     }
 
-    [HttpPost("{userId}")]
-    public async Task<ActionResult<OrderDto>> CreateOrder(Guid userId)
+    [Authorize]
+    [HttpPost("me")]
+    public async Task<ActionResult<OrderDto>> CreateOrder()
     {
-        var user = await _context.Users.FirstOrDefaultAsync(user => user.Id == userId);
+        var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+        if (!Guid.TryParse(userId, out var userGuid))
+        {
+            return Unauthorized();
+        }
+
+        var user = await _context.Users.FirstOrDefaultAsync(user => user.Id == userGuid);
         if(user is null) return NotFound(new { message = "User Not Found!"});
 
         var cart = await _context.Carts
                     .Include(cart => cart.Items)
                     .ThenInclude(item => item.Game)
-                    .FirstOrDefaultAsync(cart => cart.UserId == userId);
+                    .FirstOrDefaultAsync(cart => cart.UserId == userGuid);
                     
         if(cart is null) return NotFound(new { message = "Cart Not Found!"});
 
@@ -95,7 +106,7 @@ public class OrderController : ControllerBase
         var order = new Order
         {
             Id = Guid.NewGuid(),
-            UserId = userId,
+            UserId = userGuid,
             CreatedAt = DateTime.UtcNow,
             TotalPrice = 0
         };
@@ -128,14 +139,21 @@ public class OrderController : ControllerBase
         return Ok(order);
     }
 
-    [HttpGet("user/{userId}")]
-    public async Task<ActionResult<IEnumerable<OrderDto>>> GetUserOrders(Guid userId)
+    [Authorize]
+    [HttpGet("my-orders")]
+    public async Task<ActionResult<IEnumerable<OrderDto>>> GetUserOrders()
     {
-        var user = await _context.Users.FirstOrDefaultAsync(user => user.Id == userId);
+        var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+        if (!Guid.TryParse(userId, out var userGuid))
+        {
+            return Unauthorized();
+        }
+
+        var user = await _context.Users.FirstOrDefaultAsync(user => user.Id == userGuid);
         if(user is null) return NotFound(new { message = "User Not Found"});
 
         var orders = await _context.Orders
-            .Where(user => user.Id == userId)
+            .Where(order => order.UserId == userGuid)
             .Select(order => new OrderDto
             {
                 Id = order.Id,
@@ -157,11 +175,18 @@ public class OrderController : ControllerBase
         return Ok(orders);
     }
 
+    [Authorize]
     [HttpDelete("{id}")]
     public async Task<ActionResult> DeleteOrder(Guid id)
     {
+        var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+        if (!Guid.TryParse(userId, out var userGuid))
+        {
+            return Unauthorized();
+        }
+
         var order = await _context.Orders
-            .FirstOrDefaultAsync(order => order.Id == id);
+            .FirstOrDefaultAsync(order => order.Id == id && order.UserId == userGuid);
 
         if (order is null)
         {

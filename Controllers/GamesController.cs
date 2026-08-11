@@ -1,6 +1,7 @@
 using GameStoreApi.Data;
 using GameStoreApi.Dtos.Games;
 using GameStoreApi.Models.Entities;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
@@ -56,6 +57,7 @@ public class GamesController : ControllerBase
         return Ok(game);
     }
 
+    [Authorize(Roles = "Admin")]
     [HttpPost]
     public async Task<ActionResult<GameDto>> CreateGame([FromBody] CreateGameDto dto)
     {
@@ -78,6 +80,7 @@ public class GamesController : ControllerBase
         );
     }
 
+    [Authorize(Roles = "Admin")]
     [HttpPut("{id}")]
     public async Task<ActionResult> UpdateGame(Guid id,[FromBody] UpdateGameDto dto)
     {
@@ -99,6 +102,7 @@ public class GamesController : ControllerBase
         return NoContent();
     }
 
+    [Authorize(Roles = "Admin")]
     [HttpDelete("{id}")]
     public async Task<ActionResult> DeleteGame(Guid id)
     {
