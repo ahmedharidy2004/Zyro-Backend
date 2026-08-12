@@ -8,10 +8,10 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
 
-namespace GameStoreApi.Data.Migrations
+namespace GameStoreApi.Migrations
 {
     [DbContext(typeof(GameStoreDbContext))]
-    [Migration("20260807183937_InitialCreate")]
+    [Migration("20260812160740_InitialCreate")]
     partial class InitialCreate
     {
         /// <inheritdoc />
@@ -20,7 +20,7 @@ namespace GameStoreApi.Data.Migrations
 #pragma warning disable 612, 618
             modelBuilder.HasAnnotation("ProductVersion", "10.0.10");
 
-            modelBuilder.Entity("GameStoreApi.Domain.Entities.Cart", b =>
+            modelBuilder.Entity("GameStoreApi.Models.Entities.Cart", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
@@ -37,7 +37,7 @@ namespace GameStoreApi.Data.Migrations
                     b.ToTable("Carts");
                 });
 
-            modelBuilder.Entity("GameStoreApi.Domain.Entities.CartItem", b =>
+            modelBuilder.Entity("GameStoreApi.Models.Entities.CartItem", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
@@ -61,7 +61,7 @@ namespace GameStoreApi.Data.Migrations
                     b.ToTable("CartItems");
                 });
 
-            modelBuilder.Entity("GameStoreApi.Domain.Entities.Game", b =>
+            modelBuilder.Entity("GameStoreApi.Models.Entities.Game", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
@@ -87,7 +87,7 @@ namespace GameStoreApi.Data.Migrations
                     b.ToTable("Games");
                 });
 
-            modelBuilder.Entity("GameStoreApi.Domain.Entities.Genre", b =>
+            modelBuilder.Entity("GameStoreApi.Models.Entities.Genre", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
@@ -102,7 +102,7 @@ namespace GameStoreApi.Data.Migrations
                     b.ToTable("Genres");
                 });
 
-            modelBuilder.Entity("GameStoreApi.Domain.Entities.Order", b =>
+            modelBuilder.Entity("GameStoreApi.Models.Entities.Order", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
@@ -124,7 +124,7 @@ namespace GameStoreApi.Data.Migrations
                     b.ToTable("Orders");
                 });
 
-            modelBuilder.Entity("GameStoreApi.Domain.Entities.OrderItem", b =>
+            modelBuilder.Entity("GameStoreApi.Models.Entities.OrderItem", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
@@ -151,7 +151,7 @@ namespace GameStoreApi.Data.Migrations
                     b.ToTable("OrderItems");
                 });
 
-            modelBuilder.Entity("GameStoreApi.Domain.Entities.User", b =>
+            modelBuilder.Entity("GameStoreApi.Models.Entities.User", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
@@ -168,6 +168,17 @@ namespace GameStoreApi.Data.Migrations
                         .IsRequired()
                         .HasColumnType("TEXT");
 
+                    b.Property<string>("ResetToken")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.Property<DateTime>("ResetTokenExpiresAt")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("Role")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
                     b.Property<DateTime>("UpdatedAt")
                         .HasColumnType("TEXT");
 
@@ -180,26 +191,26 @@ namespace GameStoreApi.Data.Migrations
                     b.ToTable("Users");
                 });
 
-            modelBuilder.Entity("GameStoreApi.Domain.Entities.Cart", b =>
+            modelBuilder.Entity("GameStoreApi.Models.Entities.Cart", b =>
                 {
-                    b.HasOne("GameStoreApi.Domain.Entities.User", "User")
+                    b.HasOne("GameStoreApi.Models.Entities.User", "User")
                         .WithOne("Cart")
-                        .HasForeignKey("GameStoreApi.Domain.Entities.Cart", "UserId")
+                        .HasForeignKey("GameStoreApi.Models.Entities.Cart", "UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.Navigation("User");
                 });
 
-            modelBuilder.Entity("GameStoreApi.Domain.Entities.CartItem", b =>
+            modelBuilder.Entity("GameStoreApi.Models.Entities.CartItem", b =>
                 {
-                    b.HasOne("GameStoreApi.Domain.Entities.Cart", "Cart")
+                    b.HasOne("GameStoreApi.Models.Entities.Cart", "Cart")
                         .WithMany("Items")
                         .HasForeignKey("CartId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("GameStoreApi.Domain.Entities.Game", "Game")
+                    b.HasOne("GameStoreApi.Models.Entities.Game", "Game")
                         .WithMany("CartItems")
                         .HasForeignKey("GameId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -210,9 +221,9 @@ namespace GameStoreApi.Data.Migrations
                     b.Navigation("Game");
                 });
 
-            modelBuilder.Entity("GameStoreApi.Domain.Entities.Game", b =>
+            modelBuilder.Entity("GameStoreApi.Models.Entities.Game", b =>
                 {
-                    b.HasOne("GameStoreApi.Domain.Entities.Genre", "Genre")
+                    b.HasOne("GameStoreApi.Models.Entities.Genre", "Genre")
                         .WithMany("Games")
                         .HasForeignKey("GenreId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -221,9 +232,9 @@ namespace GameStoreApi.Data.Migrations
                     b.Navigation("Genre");
                 });
 
-            modelBuilder.Entity("GameStoreApi.Domain.Entities.Order", b =>
+            modelBuilder.Entity("GameStoreApi.Models.Entities.Order", b =>
                 {
-                    b.HasOne("GameStoreApi.Domain.Entities.User", "User")
+                    b.HasOne("GameStoreApi.Models.Entities.User", "User")
                         .WithMany("Orders")
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -232,15 +243,15 @@ namespace GameStoreApi.Data.Migrations
                     b.Navigation("User");
                 });
 
-            modelBuilder.Entity("GameStoreApi.Domain.Entities.OrderItem", b =>
+            modelBuilder.Entity("GameStoreApi.Models.Entities.OrderItem", b =>
                 {
-                    b.HasOne("GameStoreApi.Domain.Entities.Game", "Game")
+                    b.HasOne("GameStoreApi.Models.Entities.Game", "Game")
                         .WithMany("OrderItems")
                         .HasForeignKey("GameId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("GameStoreApi.Domain.Entities.Order", "Order")
+                    b.HasOne("GameStoreApi.Models.Entities.Order", "Order")
                         .WithMany("Items")
                         .HasForeignKey("OrderId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -251,29 +262,29 @@ namespace GameStoreApi.Data.Migrations
                     b.Navigation("Order");
                 });
 
-            modelBuilder.Entity("GameStoreApi.Domain.Entities.Cart", b =>
+            modelBuilder.Entity("GameStoreApi.Models.Entities.Cart", b =>
                 {
                     b.Navigation("Items");
                 });
 
-            modelBuilder.Entity("GameStoreApi.Domain.Entities.Game", b =>
+            modelBuilder.Entity("GameStoreApi.Models.Entities.Game", b =>
                 {
                     b.Navigation("CartItems");
 
                     b.Navigation("OrderItems");
                 });
 
-            modelBuilder.Entity("GameStoreApi.Domain.Entities.Genre", b =>
+            modelBuilder.Entity("GameStoreApi.Models.Entities.Genre", b =>
                 {
                     b.Navigation("Games");
                 });
 
-            modelBuilder.Entity("GameStoreApi.Domain.Entities.Order", b =>
+            modelBuilder.Entity("GameStoreApi.Models.Entities.Order", b =>
                 {
                     b.Navigation("Items");
                 });
 
-            modelBuilder.Entity("GameStoreApi.Domain.Entities.User", b =>
+            modelBuilder.Entity("GameStoreApi.Models.Entities.User", b =>
                 {
                     b.Navigation("Cart");
 

@@ -7,6 +7,8 @@ public class User
     public string Email { get; set; } = string.Empty;
     public string PasswordHash { get; set; } = string.Empty;
     public string Role { get; set; } = "User";
+    public string ResetToken { get; set; } = string.Empty;
+    public DateTime ResetTokenExpiresAt { get; set; }
     public DateTime CreatedAt { get; set; }
     public DateTime UpdatedAt { get; set; }
     public ICollection<Order> Orders { get; set; } = new List<Order>();

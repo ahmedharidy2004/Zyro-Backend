@@ -1,8 +1,8 @@
 using GameStoreApi.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
-using Microsoft.AspNetCore.Authentication.JwtBearer;
 using System.Text;
+using GameStoreApi.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -35,6 +35,11 @@ builder.Services.AddAuthentication("Bearer")
     });
 
 builder.Services.AddAuthorization();
+
+builder.Services.Configure<EmailSettings>(
+    builder.Configuration.GetSection("EmailSettings")
+);
+builder.Services.AddScoped<IEmailService, EmailService>();
 
 var app = builder.Build();
 

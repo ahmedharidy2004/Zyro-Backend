@@ -7,7 +7,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
 
-namespace GameStoreApi.Data.Migrations
+namespace GameStoreApi.Migrations
 {
     [DbContext(typeof(GameStoreDbContext))]
     partial class GameStoreDbContextModelSnapshot : ModelSnapshot
@@ -163,6 +163,13 @@ namespace GameStoreApi.Data.Migrations
 
                     b.Property<string>("PasswordHash")
                         .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("ResetToken")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.Property<DateTime>("ResetTokenExpiresAt")
                         .HasColumnType("TEXT");
 
                     b.Property<string>("Role")

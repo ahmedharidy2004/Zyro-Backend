@@ -6,8 +6,12 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
+using System.Security.Cryptography;
 using System.Text;
 using Microsoft.IdentityModel.Tokens;
+using Microsoft.AspNetCore.Authorization;
+using GameStoreApi.Services;
+using Microsoft.AspNetCore.WebUtilities;
 
 namespace GameStoreApi.Controllers;
 
@@ -16,15 +20,17 @@ namespace GameStoreApi.Controllers;
 public class AuthController : ControllerBase
 {
     private readonly GameStoreDbContext _context;
-
     private readonly IConfiguration _configuration;
+    private readonly IEmailService _emailService;
 
     public AuthController(
         GameStoreDbContext context,
-        IConfiguration configuration)
+        IConfiguration configuration,
+        IEmailService emailService)
     {
         _context = context;
         _configuration = configuration;
+        _emailService = emailService;
     }
 
     [HttpPost("register")]
@@ -83,12 +89,6 @@ public class AuthController : ControllerBase
             return Unauthorized(new { message = "Invalid Email or password" });
         }
         
-         var userDto = new UserDto
-        {
-            Id = user.Id,
-            Email = user.Email
-        };
-
         var claims = new List<Claim>
         {
             new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()),
@@ -118,5 +118,98 @@ public class AuthController : ControllerBase
                             .WriteToken(token);
 
         return Ok(new { token = tokenString });
+    }
+
+    [Authorize]
+    [HttpPost("change-password")]
+    public async Task<ActionResult> ChangePassword(ChangePasswordDto dto)
+    {
+        var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+        if (!Guid.TryParse(userId, out var userGuid))
+        {
+            return Unauthorized(new {message = "You are not authorized :( "});
+        }
+
+        var user = await _context.Users.FirstOrDefaultAsync(user => user.Id == userGuid);
+        if(user is null) return NotFound(new { message = "Sth wrong happened!"});
+      
+        // check if the password match the old one
+        if (!BCrypt.Net.BCrypt.Verify(dto.CurrentPassword, user.PasswordHash))
+        {
+            return Unauthorized(new { message = "Current Password is incorrect" });
+        }
+
+        // check if passwords match.
+        Console.WriteLine(dto.NewPassword);
+        Console.WriteLine(dto.ConfirmPassword);
+        if(dto.NewPassword != dto.ConfirmPassword)
+        {
+            return BadRequest("Passwords do not match!");
+        }
+
+        var passwordHash =  BCrypt.Net.BCrypt.HashPassword(dto.NewPassword);
+        user.PasswordHash = passwordHash;
+        user.UpdatedAt = DateTime.UtcNow;
+
+        await _context.SaveChangesAsync();
+        return Ok(new { message = "Password Changed successfully"});
+    }
+
+    [HttpPost("forget-password")]
+    public async Task<ActionResult> ForgetPassword(ForgetPasswordDto dto)
+    {
+        var user = await _context.Users.FirstOrDefaultAsync(user => user.Email == dto.Email);
+        if(user is null) 
+            return Ok("If an account with this email exists, a password reset link has been sent.");
+
+        byte[] tokenBytes = RandomNumberGenerator.GetBytes(32);
+
+        string resetToken = WebEncoders.Base64UrlEncode(tokenBytes);
+
+        var hashedToken = BCrypt.Net.BCrypt.HashPassword(resetToken);
+
+        user.ResetToken = hashedToken;
+        user.ResetTokenExpiresAt = DateTime.UtcNow.AddMinutes(10);
+        await _context.SaveChangesAsync();
+
+        string body = "Please use this specific link to reset your password: \n" 
+        + $"link: http://localhost:5183/api/auth/reset-password/{user.Id}/{resetToken}";
+
+        await _emailService.SendEmailAsync(dto.Email, "Reset Password Confirmation", body);
+
+        return Ok("If an account with this email exists, a password reset link has been sent.");
+    }
+
+    [HttpPost("reset-password/{userId}/{token}")]
+    public async Task<ActionResult> ResetPassword(
+        Guid userId,
+        string token,
+        ResetPasswordDto dto)
+    {
+        var user = await _context.Users.FindAsync(userId);
+
+        if (user is null || string.IsNullOrEmpty(user.ResetToken))
+        {
+            return Unauthorized("Invalid or expired token. Please try again.");
+        }
+
+        if (user.ResetTokenExpiresAt <= DateTime.UtcNow)
+        {
+            return Unauthorized("Invalid or expired token. Please try again.");
+        }
+
+        if (!BCrypt.Net.BCrypt.Verify(token, user.ResetToken))
+        {
+            return Unauthorized("Invalid or expired token. Please try again.");
+        }
+
+        user.PasswordHash = BCrypt.Net.BCrypt.HashPassword(dto.NewPassword);
+
+        user.ResetToken = string.Empty;
+        user.ResetTokenExpiresAt = DateTime.UtcNow;
+
+        await _context.SaveChangesAsync();
+
+        return Ok("Password changed successfully. Please try to log in with your new password.");
     }
 }

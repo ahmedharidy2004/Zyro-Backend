@@ -300,3 +300,6 @@ C:\Users\Ahmed Mahmoud\OneDrive\Desktop\GameStoreApi\Game-Store-API\bin\Debug\ne
 C:\Users\Ahmed Mahmoud\OneDrive\Desktop\GameStoreApi\Game-Store-API\bin\Debug\net10.0\Microsoft.IdentityModel.Protocols.OpenIdConnect.dll
 C:\Users\Ahmed Mahmoud\OneDrive\Desktop\GameStoreApi\Game-Store-API\bin\Debug\net10.0\Microsoft.IdentityModel.Tokens.dll
 C:\Users\Ahmed Mahmoud\OneDrive\Desktop\GameStoreApi\Game-Store-API\bin\Debug\net10.0\System.IdentityModel.Tokens.Jwt.dll
+C:\Users\Ahmed Mahmoud\OneDrive\Desktop\GameStoreApi\Game-Store-API\bin\Debug\net10.0\BouncyCastle.Cryptography.dll
+C:\Users\Ahmed Mahmoud\OneDrive\Desktop\GameStoreApi\Game-Store-API\bin\Debug\net10.0\MailKit.dll
+C:\Users\Ahmed Mahmoud\OneDrive\Desktop\GameStoreApi\Game-Store-API\bin\Debug\net10.0\MimeKit.dll
