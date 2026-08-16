@@ -6,6 +6,8 @@ public class Game
 
     public string Name { get; set; } = string.Empty;
 
+    public string imageURL { get; set; } = string.Empty;
+
     public decimal Price { get; set; }
 
     public Guid GenreId { get; set; }
@@ -17,4 +19,6 @@ public class Game
     public ICollection<CartItem> CartItems { get; set; } = new List<CartItem>();
 
     public ICollection<OrderItem> OrderItems { get; set; } = new List<OrderItem>();
+
+    public ICollection<Review> Reviews { get; set; } = new List<Review>();
 }

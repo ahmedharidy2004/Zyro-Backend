@@ -35,14 +35,41 @@ Content-Type: application/json
 }
 
 ###
+POST http://localhost:5183/api/auth/change-password
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJodHRwOi8vc2NoZW1hcy54bWxzb2FwLm9yZy93cy8yMDA1LzA1L2lkZW50aXR5L2NsYWltcy9uYW1laWRlbnRpZmllciI6Ijg2M2E0MTkxLTE3YzQtNDhiNS1hYjIwLTRhMzMxZjk4ZWRiZSIsImh0dHA6Ly9zY2hlbWFzLnhtbHNvYXAub3JnL3dzLzIwMDUvMDUvaWRlbnRpdHkvY2xhaW1zL2VtYWlsYWRkcmVzcyI6ImFkbWluQHRlc3QuaW8iLCJodHRwOi8vc2NoZW1hcy54bWxzb2FwLm9yZy93cy8yMDA1LzA1L2lkZW50aXR5L2NsYWltcy9uYW1lIjoiYWhtZWQiLCJodHRwOi8vc2NoZW1hcy5taWNyb3NvZnQuY29tL3dzLzIwMDgvMDYvaWRlbnRpdHkvY2xhaW1zL3JvbGUiOiJVc2VyIiwiZXhwIjoxNzg2NjM3NDY0LCJpc3MiOiJHYW1lU3RvcmVBcGkiLCJhdWQiOiJHYW1lU3RvcmVBcGkifQ.8EydwWTwP91GPx53nACJTOgkDGqDsOJkaRbvsdRq7Pk
+Content-Type: application/json
+
+{
+  "CurrentPassword": "123456",
+  "NewPassword": "harhar",
+  "ConfirmPassword": "harhar"
+}
+
+###
 POST http://localhost:5183/api/auth/login
 Content-Type: application/json
 
 {
   "Email": "admin@test.io",
-  "Password": "123456"
+  "Password": "haridy"
 }
 
 ###
 GET http://localhost:5183/api/order/my-orders
 Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJodHRwOi8vc2NoZW1hcy54bWxzb2FwLm9yZy93cy8yMDA1LzA1L2lkZW50aXR5L2NsYWltcy9uYW1laWRlbnRpZmllciI6IjEyNmFkZTk3LTJlM2EtNDE4Ny04ZjVlLTI1NDMyM2E3ZDQ3ZSIsImh0dHA6Ly9zY2hlbWFzLnhtbHNvYXAub3JnL3dzLzIwMDUvMDUvaWRlbnRpdHkvY2xhaW1zL2VtYWlsYWRkcmVzcyI6ImFobWVkaGFyaWR5QHRlc3QuaW8iLCJodHRwOi8vc2NoZW1hcy54bWxzb2FwLm9yZy93cy8yMDA1LzA1L2lkZW50aXR5L2NsYWltcy9uYW1lIjoiYWhtZWRoYXJoYXIiLCJleHAiOjE3ODY1MzQ4MDIsImlzcyI6IkdhbWVTdG9yZUFwaSIsImF1ZCI6IkdhbWVTdG9yZUFwaSJ9.F-6ZKKFBh1_oxVRE8ApemQwosopySwbKFic0iwKGH5g
+
+###
+POST http://localhost:5183/api/auth/forget-password
+Content-Type: application/json
+
+{
+  "Email": "admin@test.io"
+}
+
+###
+POST http://localhost:5183/api/auth/reset-password/863a4191-17c4-48b5-ab20-4a331f98edbe/BiZ_azZWlTWc67DCMSiqam068tyFpeEJgvjSdKNe5zc
+Content-Type: application/json
+
+{
+  "NewPassword": "haridy"
+}

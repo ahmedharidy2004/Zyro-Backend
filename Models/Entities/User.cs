@@ -13,4 +13,5 @@ public class User
     public DateTime UpdatedAt { get; set; }
     public ICollection<Order> Orders { get; set; } = new List<Order>();
     public Cart? Cart { get; set; }
+    public ICollection<Review> Reviews { get; set; } = new List<Review>();
 }
