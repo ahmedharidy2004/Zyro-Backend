@@ -38,7 +38,7 @@ public static class DbSeeder
                 Price = 59.99m,
                 GenreId = genres.First(g => g.Name == "Adventure").Id,
                 ReleaseDate = new DateOnly(2017, 3, 3),
-                imageURL = "https://via.placeholder.com/300x400?text=Zelda"
+                imageURL = "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQjpMgXIem2QtsglcBBBNAVqwbeNuLTd6CVOZ-NZqSzgg&s=10"
             },
             new Game
             {
@@ -47,7 +47,7 @@ public static class DbSeeder
                 Price = 59.99m,
                 GenreId = genres.First(g => g.Name == "RPG").Id,
                 ReleaseDate = new DateOnly(2022, 2, 25),
-                imageURL = "https://via.placeholder.com/300x400?text=EldenRing"
+                imageURL = "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSirwsHzzCShA3Be6M9sLeqTawjqFof-XEMa79bc6y-VA&s=10"
             },
             new Game
             {
@@ -56,7 +56,7 @@ public static class DbSeeder
                 Price = 14.99m,
                 GenreId = genres.First(g => g.Name == "Strategy").Id,
                 ReleaseDate = new DateOnly(2019, 7, 30),
-                imageURL = "https://via.placeholder.com/300x400?text=Chess"
+                imageURL = "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQ5RmIUgo6ZCFR9fAzSkbky18OGWdlGamaDlcYNvntubQ&s=10"
             },
             new Game
             {
@@ -65,7 +65,7 @@ public static class DbSeeder
                 Price = 69.99m,
                 GenreId = genres.First(g => g.Name == "Action").Id,
                 ReleaseDate = new DateOnly(2019, 10, 25),
-                imageURL = "https://via.placeholder.com/300x400?text=ModernWarfare"
+                imageURL = "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQXY3WZqPsxy8_5lYY-aE0CWyAWHMouuPdnUUUCVnnBKZp8hrW8ew6H5hfm&s=10"
             },
             new Game
             {
@@ -74,7 +74,7 @@ public static class DbSeeder
                 Price = 19.99m,
                 GenreId = genres.First(g => g.Name == "Puzzle").Id,
                 ReleaseDate = new DateOnly(2011, 4, 18),
-                imageURL = "https://via.placeholder.com/300x400?text=Portal2"
+                imageURL = "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSe1WnAd3ir7dIQqItaw84kJs04hS2o7grwG1DlSfnbDw&s=10"
             },
             new Game
             {
@@ -83,7 +83,7 @@ public static class DbSeeder
                 Price = 59.99m,
                 GenreId = genres.First(g => g.Name == "Sports").Id,
                 ReleaseDate = new DateOnly(2023, 9, 29),
-                imageURL = "https://via.placeholder.com/300x400?text=FIFA24"
+                imageURL = "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcT6upNO06KTImeHJUphwtnLaiJB-uz2xb_WSusQ5m62kg&s=10"
             }
         };
         context.Games.AddRange(games);

@@ -27,8 +27,10 @@ public class GamesController : ControllerBase
                             Id = game.Id,
                             Name = game.Name,
                             Price = game.Price,
+                            ImageURL = game.imageURL,
                             GenreId = game.GenreId,
-                            ReleaseDate = game.ReleaseDate
+                            ReleaseDate = game.ReleaseDate,
+                            Genre = game.Genre.Name
                         }).ToListAsync();
 
         return Ok(games);
