@@ -47,7 +47,9 @@ public class GamesController : ControllerBase
                 Name = game.Name,
                 Price = game.Price,
                 GenreId = game.GenreId,
-                ReleaseDate = game.ReleaseDate
+                ReleaseDate = game.ReleaseDate,
+                ImageURL = game.imageURL,
+                Genre = game.Genre.Name,
             })
             .FirstOrDefaultAsync();
 

@@ -183,7 +183,7 @@ public class AuthController : ControllerBase
         await _context.SaveChangesAsync();
 
         string body = "Please use this specific link to reset your password: \n" 
-        + $"link: http://localhost:5183/api/auth/reset-password/{user.Id}/{resetToken}";
+        + $"link: http://localhost:5173/reset-password/{user.Id}/{resetToken}";
 
         await _emailService.SendEmailAsync(dto.Email, "Reset Password Confirmation", body);
 

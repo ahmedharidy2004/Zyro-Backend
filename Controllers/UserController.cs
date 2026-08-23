@@ -88,11 +88,11 @@ public class UserController : ControllerBase
 
         return CreatedAtAction(nameof(GetUserById), new { id = userDto.Id }, userDto);
     }
-
-    [Authorize(Roles = "Admin")]
+    
     [HttpPut("{id}")]
     public async Task<ActionResult> UpdateUser(Guid id, UpdateUserDto dto)
     {
+       
         var UpdatedUser = await _context.Users.FirstOrDefaultAsync(user => user.Id == id);
 
         if(UpdatedUser is null)
