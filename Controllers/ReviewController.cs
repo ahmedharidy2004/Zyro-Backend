@@ -69,6 +69,35 @@ public class ReviewController : ControllerBase
         return Ok(review);
     }
 
+    [HttpGet("game/{gameId:guid}")]
+    public async Task<ActionResult<IEnumerable<ReviewDto>>> GetReviewByGameId(Guid gameId)
+    {
+        var reviews = await _context.Reviews
+            .AsNoTracking()
+            .Where(review => review.GameId == gameId)
+            .Select(review => new ReviewDto
+            {
+                Id = review.Id,
+                Rating = review.Rating,
+                Comment = review.Comment,
+                UserId = review.UserId,
+                Username = review.User.Username,
+                GameId = review.GameId,
+                GameName = review.Game.Name,
+                CreatedAt = review.CreatedAt,
+                UpdatedAt = review.UpdatedAt
+            })
+            .OrderByDescending(review => review.CreatedAt)
+            .ToListAsync();
+
+        if (reviews.Count == 0)
+        {
+            return NotFound(new { message = "No reviews found for this game!" });
+        }
+
+        return Ok(reviews);
+    }
+
     [HttpPost]
     [Authorize]
     public async Task<ActionResult<ReviewDto>> CreateReview([FromBody] CreateReviewDto dto)
