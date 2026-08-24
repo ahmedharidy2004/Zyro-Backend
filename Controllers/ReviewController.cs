@@ -136,6 +136,14 @@ public class ReviewController : ControllerBase
             return NotFound(new { message = "Game Not Found!" });
         }
 
+        var existingReview =await _context.Reviews.FirstOrDefaultAsync(review => review.UserId == userGuid
+                                                                         && review.GameId == dto.GameId);
+
+        if(existingReview is not null)
+        {
+            return BadRequest(new { message = "You already created a review on this game!"});
+        }                                                             
+
         var now = DateTime.UtcNow;
         var review = new Review
         {
