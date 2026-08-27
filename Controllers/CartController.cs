@@ -121,7 +121,23 @@ public class CartController : ControllerBase
 
         await _context.SaveChangesAsync();
 
-        return Ok(cartItem);
+        var createdItem = await _context.CartItems
+            .Include(item => item.Game)
+            .FirstOrDefaultAsync(item => item.Id == cartItem.Id);
+
+        if (createdItem is null)
+        {
+            return StatusCode(500, new { message = "Failed to create cart item." });
+        }
+
+        return Ok(new CartItemDto
+        {
+            Id = createdItem.Id,
+            GameId = createdItem.GameId,
+            GameName = createdItem.Game.Name,
+            Price = createdItem.Game.Price,
+            Quantity = createdItem.Quantity
+        });
     }
 
     [Authorize]

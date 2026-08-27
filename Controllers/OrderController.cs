@@ -29,6 +29,7 @@ public class OrderController : ControllerBase
             {
                 Id = order.Id,
                 UserId = order.UserId,
+                PaymentMethod = order.PaymentMethod,
                 TotalPrice = order.TotalPrice,
 
                 Items = order.Items
@@ -36,6 +37,7 @@ public class OrderController : ControllerBase
                     {
                         Id = orderItem.Id,
                         GameId = orderItem.GameId,
+                        GameName = orderItem.Game.Name,
                         Quantity = orderItem.Quantity,
                         UnitPrice = orderItem.UnitPrice
                     })
@@ -56,6 +58,7 @@ public class OrderController : ControllerBase
             {
                 Id = order.Id,
                 UserId = order.UserId,
+                PaymentMethod = order.PaymentMethod,
                 TotalPrice = order.TotalPrice,
 
                 Items = order.Items
@@ -63,6 +66,7 @@ public class OrderController : ControllerBase
                     {
                         Id = orderItem.Id,
                         GameId = orderItem.GameId,
+                        GameName = orderItem.Game.Name,
                         Quantity = orderItem.Quantity,
                         UnitPrice = orderItem.UnitPrice
                     })
@@ -80,7 +84,7 @@ public class OrderController : ControllerBase
 
     [Authorize]
     [HttpPost("me")]
-    public async Task<ActionResult<OrderDto>> CreateOrder()
+    public async Task<ActionResult<OrderDto>> CreateOrder([FromBody] CreateOrderDto dto)
     {
         var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
         if (!Guid.TryParse(userId, out var userGuid))
@@ -89,14 +93,19 @@ public class OrderController : ControllerBase
         }
 
         var user = await _context.Users.FirstOrDefaultAsync(user => user.Id == userGuid);
-        if(user is null) return NotFound(new { message = "User Not Found!"});
+        if (user is null) return NotFound(new { message = "User Not Found!" });
+
+        if (!Enum.IsDefined(typeof(PaymentMethod), dto.PaymentMethod))
+        {
+            return BadRequest(new { message = "Invalid payment method." });
+        }
 
         var cart = await _context.Carts
                     .Include(cart => cart.Items)
                     .ThenInclude(item => item.Game)
                     .FirstOrDefaultAsync(cart => cart.UserId == userGuid);
-                    
-        if(cart is null) return NotFound(new { message = "Cart Not Found!"});
+
+        if (cart is null) return NotFound(new { message = "Cart Not Found!" });
 
         if (cart.Items.Count == 0)
         {
@@ -107,11 +116,12 @@ public class OrderController : ControllerBase
         {
             Id = Guid.NewGuid(),
             UserId = userGuid,
+            PaymentMethod = dto.PaymentMethod,
             CreatedAt = DateTime.UtcNow,
             TotalPrice = 0
         };
 
-        foreach(var item in cart.Items)
+        foreach (var item in cart.Items)
         {
             var orderItem = new OrderItem
             {
@@ -119,7 +129,8 @@ public class OrderController : ControllerBase
                 OrderId = order.Id,
                 GameId = item.GameId,
                 Quantity = item.Quantity,
-                UnitPrice = item.Game.Price
+                UnitPrice = item.Game.Price,
+                Game = item.Game
             };
 
             order.Items.Add(orderItem);
@@ -127,16 +138,34 @@ public class OrderController : ControllerBase
         }
 
         _context.Orders.Add(order);
-        
 
-        foreach(var item in cart.Items)
+        foreach (var item in cart.Items)
         {
             _context.CartItems.Remove(item);
         }
 
         await _context.SaveChangesAsync();
 
-        return Ok(order);
+        var orderDto = new OrderDto
+        {
+            Id = order.Id,
+            UserId = order.UserId,
+            PaymentMethod = order.PaymentMethod,
+            TotalPrice = order.TotalPrice,
+            Items = order.Items
+                .Select(orderItem => new OrderItemDto
+                {
+                    Id = orderItem.Id,
+                    OrderId = orderItem.OrderId,
+                    GameId = orderItem.GameId,
+                    GameName = orderItem.Game.Name,
+                    Quantity = orderItem.Quantity,
+                    UnitPrice = orderItem.UnitPrice
+                })
+                .ToList()
+        };
+
+        return Ok(orderDto);
     }
 
     [Authorize]
@@ -158,6 +187,7 @@ public class OrderController : ControllerBase
             {
                 Id = order.Id,
                 UserId = order.UserId,
+                PaymentMethod = order.PaymentMethod,
                 TotalPrice = order.TotalPrice,
 
                 Items = order.Items
@@ -165,6 +195,7 @@ public class OrderController : ControllerBase
                     {
                         Id = orderItem.Id,
                         GameId = orderItem.GameId,
+                        GameName = orderItem.Game.Name,
                         Quantity = orderItem.Quantity,
                         UnitPrice = orderItem.UnitPrice
                     })
@@ -191,6 +222,11 @@ public class OrderController : ControllerBase
         if (order is null)
         {
             return NotFound(new { message = "Order Not Found" });
+        }
+
+        if(order.CreatedAt < DateTime.UtcNow.AddDays(-3))
+        {
+            return BadRequest("Order is already placed and is being charged");
         }
 
         _context.Orders.Remove(order);

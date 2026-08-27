@@ -11,7 +11,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace GameStoreApi.Migrations
 {
     [DbContext(typeof(GameStoreDbContext))]
-    [Migration("20260816174959_InitialCreate")]
+    [Migration("20260826203328_InitialCreate")]
     partial class InitialCreate
     {
         /// <inheritdoc />
@@ -68,8 +68,18 @@ namespace GameStoreApi.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("TEXT");
 
+                    b.Property<string>("Description")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.Property<decimal>("DiscountRate")
+                        .HasColumnType("TEXT");
+
                     b.Property<Guid>("GenreId")
                         .HasColumnType("TEXT");
+
+                    b.Property<bool>("HasDiscount")
+                        .HasColumnType("INTEGER");
 
                     b.Property<string>("Name")
                         .IsRequired()
@@ -81,6 +91,10 @@ namespace GameStoreApi.Migrations
                         .HasColumnType("TEXT");
 
                     b.Property<DateOnly>("ReleaseDate")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("TrailerURL")
+                        .IsRequired()
                         .HasColumnType("TEXT");
 
                     b.Property<string>("imageURL")
@@ -109,6 +123,50 @@ namespace GameStoreApi.Migrations
                     b.ToTable("Genres");
                 });
 
+            modelBuilder.Entity("GameStoreApi.Models.Entities.News", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("Content")
+                        .IsRequired()
+                        .HasMaxLength(4000)
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("CoverURL")
+                        .IsRequired()
+                        .HasMaxLength(500)
+                        .HasColumnType("TEXT");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("TEXT")
+                        .HasDefaultValueSql("CURRENT_TIMESTAMP");
+
+                    b.Property<DateTime?>("PublishedAt")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("Title")
+                        .IsRequired()
+                        .HasMaxLength(200)
+                        .HasColumnType("TEXT");
+
+                    b.Property<DateTime>("UpdatedAt")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("TEXT")
+                        .HasDefaultValueSql("CURRENT_TIMESTAMP");
+
+                    b.Property<Guid>("UserId")
+                        .HasColumnType("TEXT");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("News");
+                });
+
             modelBuilder.Entity("GameStoreApi.Models.Entities.Order", b =>
                 {
                     b.Property<Guid>("Id")
@@ -117,6 +175,9 @@ namespace GameStoreApi.Migrations
 
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("TEXT");
+
+                    b.Property<int>("PaymentMethod")
+                        .HasColumnType("INTEGER");
 
                     b.Property<decimal>("TotalPrice")
                         .HasPrecision(18, 2)
@@ -214,6 +275,10 @@ namespace GameStoreApi.Migrations
                         .IsRequired()
                         .HasColumnType("TEXT");
 
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
                     b.Property<string>("PasswordHash")
                         .IsRequired()
                         .HasColumnType("TEXT");
@@ -286,6 +351,15 @@ namespace GameStoreApi.Migrations
                         .IsRequired();
 
                     b.Navigation("Genre");
+                });
+
+            modelBuilder.Entity("GameStoreApi.Models.Entities.News", b =>
+                {
+                    b.HasOne("GameStoreApi.Models.Entities.User", null)
+                        .WithMany("News")
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
                 });
 
             modelBuilder.Entity("GameStoreApi.Models.Entities.Order", b =>
@@ -364,6 +438,8 @@ namespace GameStoreApi.Migrations
             modelBuilder.Entity("GameStoreApi.Models.Entities.User", b =>
                 {
                     b.Navigation("Cart");
+
+                    b.Navigation("News");
 
                     b.Navigation("Orders");
 

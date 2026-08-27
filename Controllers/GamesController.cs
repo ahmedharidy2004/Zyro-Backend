@@ -26,8 +26,12 @@ public class GamesController : ControllerBase
                         {
                             Id = game.Id,
                             Name = game.Name,
+                            Description = game.Description,
                             Price = game.Price,
                             ImageURL = game.imageURL,
+                            TrailerURL = game.TrailerURL,
+                            HasDiscount = game.HasDiscount,
+                            DiscountRate = game.DiscountRate,
                             GenreId = game.GenreId,
                             ReleaseDate = game.ReleaseDate,
                             Genre = game.Genre.Name
@@ -45,10 +49,14 @@ public class GamesController : ControllerBase
             {
                 Id = game.Id,
                 Name = game.Name,
+                Description = game.Description,
                 Price = game.Price,
                 GenreId = game.GenreId,
                 ReleaseDate = game.ReleaseDate,
                 ImageURL = game.imageURL,
+                TrailerURL = game.TrailerURL,
+                HasDiscount = game.HasDiscount,
+                DiscountRate = game.DiscountRate,
                 Genre = game.Genre.Name,
             })
             .FirstOrDefaultAsync();
@@ -61,6 +69,38 @@ public class GamesController : ControllerBase
         return Ok(game);
     }
 
+    [HttpGet("{id:guid}/rating")]
+    public async Task<ActionResult> GetGameAverageRating(Guid id)
+    {
+        var gameExists = await _context.Games
+            .AsNoTracking()
+            .AnyAsync(game => game.Id == id);
+
+        if (!gameExists)
+        {
+            return NotFound(new { message = "Game Not Found!" });
+        }
+
+        var rating = await _context.Reviews
+            .AsNoTracking()
+            .Where(review => review.GameId == id)
+            .GroupBy(review => review.GameId)
+            .Select(group => new
+            {
+                GameId = group.Key,
+                AverageRating = group.Average(review => review.Rating),
+                ReviewCount = group.Count()
+            })
+            .FirstOrDefaultAsync();
+
+        return Ok(new
+        {
+            GameId = id,
+            AverageRating = rating?.AverageRating ?? 0m,
+            ReviewCount = rating?.ReviewCount ?? 0
+        });
+    }
+
     [Authorize(Roles = "Admin")]
     [HttpPost]
     public async Task<ActionResult<GameDto>> CreateGame([FromBody] CreateGameDto dto)
@@ -69,7 +109,12 @@ public class GamesController : ControllerBase
         {
             Id = Guid.NewGuid(),
             Name = dto.Name,
+            Description = dto.Description,
             Price = dto.Price,
+            imageURL = dto.ImageURL,
+            TrailerURL = dto.TrailerURL,
+            HasDiscount = dto.HasDiscount,
+            DiscountRate = dto.DiscountRate,
             GenreId = dto.GenreId,
             ReleaseDate = dto.ReleaseDate
         };
@@ -97,7 +142,11 @@ public class GamesController : ControllerBase
         }
 
         game.Name = dto.Name;
+        game.Description = dto.Description;
         game.Price = dto.Price;
+        game.TrailerURL = dto.TrailerURL;
+        game.HasDiscount = dto.HasDiscount;
+        game.DiscountRate = dto.DiscountRate;
         game.GenreId = dto.GenreId;
         game.ReleaseDate = dto.ReleaseDate;
 

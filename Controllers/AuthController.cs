@@ -62,7 +62,14 @@ public class AuthController : ControllerBase
             UpdatedAt = DateTime.UtcNow
         };
 
+        var cart = new Cart
+            {
+                Id = Guid.NewGuid(),
+                UserId = newUser.Id
+            };
+
         _context.Add(newUser);
+        _context.Carts.Add(cart);
         await _context.SaveChangesAsync();
 
         var userDto = new UserDto

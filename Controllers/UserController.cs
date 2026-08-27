@@ -26,6 +26,7 @@ public class UserController : ControllerBase
                             .Select(user => new UserDto
                             {
                                Id = user.Id,
+                               Name = user.Name,
                                Username = user.Username,
                                Email = user.Email,
                                Role = user.Role
@@ -43,6 +44,7 @@ public class UserController : ControllerBase
                             .Select(user => new UserDto
                             {
                                Id = user.Id,
+                               Name = user.Name,
                                Username = user.Username,
                                Email = user.Email,
                                Role = user.Role
@@ -63,6 +65,7 @@ public class UserController : ControllerBase
         var CreatedUser = new User
         {
             Id = Guid.NewGuid(),
+            Name = dto.Name,
             Username = dto.Username,
             Email = dto.Email,
             Role = dto.Role
@@ -81,6 +84,7 @@ public class UserController : ControllerBase
         var userDto = new UserDto
             {
                 Id = CreatedUser.Id,
+                Name = CreatedUser.Name,
                 Username = CreatedUser.Username,
                 Email = CreatedUser.Email,
                 Role = CreatedUser.Role
@@ -101,6 +105,7 @@ public class UserController : ControllerBase
         } 
 
 
+        UpdatedUser.Name = dto.Name;
         UpdatedUser.Username = dto.Username;
         UpdatedUser.Email = dto.Email;
         UpdatedUser.Role = dto.Role;

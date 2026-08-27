@@ -6,6 +6,8 @@ public class Order
 
     public Guid UserId { get; set; }
 
+    public PaymentMethod PaymentMethod { get; set; }
+
     public DateTime CreatedAt { get; set; }
 
     public decimal TotalPrice { get; set; }

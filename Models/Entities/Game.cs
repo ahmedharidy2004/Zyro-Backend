@@ -6,9 +6,17 @@ public class Game
 
     public string Name { get; set; } = string.Empty;
 
+    public string Description { get; set; } = string.Empty;
+    
     public string imageURL { get; set; } = string.Empty;
 
+    public string TrailerURL { get; set; } = string.Empty;
+
     public decimal Price { get; set; }
+
+    public bool HasDiscount { get; set; }
+
+    public decimal DiscountRate { get; set; }
 
     public Guid GenreId { get; set; }
 

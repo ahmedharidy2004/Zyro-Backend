@@ -2,6 +2,7 @@ using GameStoreApi.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
+using System.Text.Json.Serialization;
 using GameStoreApi.Services;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -10,7 +11,11 @@ builder.Services.AddDbContext<GameStoreDbContext>(options =>
     options.UseSqlite(
         builder.Configuration.GetConnectionString("GameStore")));
 
-builder.Services.AddControllers();
+builder.Services.AddControllers()
+    .AddJsonOptions(options =>
+    {
+        options.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.IgnoreCycles;
+    });
 builder.Services.AddAuthentication("Bearer")
     .AddJwtBearer(options =>
     {

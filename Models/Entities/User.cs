@@ -3,6 +3,7 @@ namespace GameStoreApi.Models.Entities;
 public class User
 {
     public Guid Id { get; set; }
+    public string Name { get; set; } = string.Empty;
     public string Username { get; set; } = string.Empty;
     public string Email { get; set; } = string.Empty;
     public string PasswordHash { get; set; } = string.Empty;
@@ -14,4 +15,5 @@ public class User
     public ICollection<Order> Orders { get; set; } = new List<Order>();
     public Cart? Cart { get; set; }
     public ICollection<Review> Reviews { get; set; } = new List<Review>();
+    public ICollection<News> News { get; set; } = new List<News>();
 }
