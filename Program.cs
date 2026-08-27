@@ -8,7 +8,7 @@ using GameStoreApi.Services;
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddDbContext<GameStoreDbContext>(options =>
-    options.UseSqlite(
+    options.UseNpgsql(
         builder.Configuration.GetConnectionString("GameStore")));
 
 builder.Services.AddControllers()
@@ -46,12 +46,15 @@ builder.Services.Configure<EmailSettings>(
 );
 builder.Services.AddScoped<IEmailService, EmailService>();
 
+var frontendOrigins = (builder.Configuration["FrontendUrl"] ?? "http://localhost:5173")
+    .Split(',', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries);
+
 builder.Services.AddCors(options =>
 {
     options.AddPolicy("AllowFrontend", policy =>
     {
         policy
-            .WithOrigins("http://localhost:5173")
+            .WithOrigins(frontendOrigins)
             .AllowAnyHeader()
             .AllowAnyMethod();
     });

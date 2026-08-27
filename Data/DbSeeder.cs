@@ -1,4 +1,5 @@
 using GameStoreApi.Models.Entities;
+using Microsoft.EntityFrameworkCore;
 
 namespace GameStoreApi.Data;
 
@@ -6,8 +7,7 @@ public static class DbSeeder
 {
     public static void Initialize(GameStoreDbContext context)
     {
-        // Ensure database is created
-        context.Database.EnsureCreated();
+        context.Database.Migrate();
 
         // If data already exists, skip seeding
         if (context.Genres.Any() || context.Games.Any() || context.Users.Any())

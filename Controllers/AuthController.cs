@@ -189,8 +189,9 @@ public class AuthController : ControllerBase
         user.ResetTokenExpiresAt = DateTime.UtcNow.AddMinutes(10);
         await _context.SaveChangesAsync();
 
-        string body = "Please use this specific link to reset your password: \n" 
-        + $"link: http://localhost:5173/reset-password/{user.Id}/{resetToken}";
+        var frontendUrl = _configuration["FrontendUrl"] ?? "http://localhost:5173";
+        string body = "Please use this specific link to reset your password: \n"
+        + $"link: {frontendUrl.TrimEnd('/')}/reset-password/{user.Id}/{resetToken}";
 
         await _emailService.SendEmailAsync(dto.Email, "Reset Password Confirmation", body);
 

@@ -74,9 +74,9 @@
               "target": "Package",
               "version": "[10.0.10, )"
             },
-            "Microsoft.EntityFrameworkCore.Sqlite": {
+            "Npgsql.EntityFrameworkCore.PostgreSQL": {
               "target": "Package",
-              "version": "[10.0.10, )"
+              "version": "[10.0.0, )"
             }
           },
           "imports": [
