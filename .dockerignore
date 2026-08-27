@@ -1,0 +1,7 @@
+**/bin/
+**/obj/
+artifacts/
+.git/
+.vs/
+*.user
+*.suo
