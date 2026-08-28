@@ -1,4 +1,5 @@
 appsettings.json
+appsettings.Development.json
 appsettings.*.json
 !appsettings.Example.json
 test.http

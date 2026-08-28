@@ -72,15 +72,19 @@ public class AuthController : ControllerBase
         _context.Carts.Add(cart);
         await _context.SaveChangesAsync();
 
-        var userDto = new UserDto
-        {
-            Id = newUser.Id,
-            Username = newUser.Username,
-            Email = newUser.Email,
-            Role = newUser.Role
-        };
+        var tokenString = GenerateJwtToken(newUser);
 
-        return Ok(userDto);
+        return Ok(new
+        {
+            token = tokenString,
+            user = new
+            {
+                newUser.Id,
+                newUser.Username,
+                newUser.Email,
+                newUser.Role
+            }
+        });
     }
 
     [HttpPost("login")]
@@ -96,6 +100,23 @@ public class AuthController : ControllerBase
             return Unauthorized(new { message = "Invalid Email or password" });
         }
         
+        var tokenString = GenerateJwtToken(user);
+
+        return Ok(new
+                {
+                    token = tokenString,
+                    user = new
+                    {
+                        user.Id,
+                        user.Username,
+                        user.Email,
+                        user.Role
+                    }
+                });
+    }
+
+    private string GenerateJwtToken(User user)
+    {
         var claims = new List<Claim>
         {
             new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()),
@@ -121,20 +142,7 @@ public class AuthController : ControllerBase
             signingCredentials: credentials
         );
 
-        var tokenString = new JwtSecurityTokenHandler()
-                            .WriteToken(token);
-
-        return Ok(new
-                {
-                    token = tokenString,
-                    user = new
-                    {
-                        user.Id,
-                        user.Username,
-                        user.Email,
-                        user.Role
-                    }
-                });
+        return new JwtSecurityTokenHandler().WriteToken(token);
     }
 
     [Authorize]
